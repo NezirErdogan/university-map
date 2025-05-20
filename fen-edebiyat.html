@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RTEÜ Fen Edebiyat Fakültesi</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            width: 100%;
+            height: 100vh;
+        }
+        .blink {
+            animation: blink-animation 1s steps(5, start) infinite;
+        }
+        @keyframes blink-animation {
+            to {
+                visibility: hidden;
+            }
+        }
+        .blinking-marker {
+            animation: markerBlink 1s infinite;
+        }
+        @keyframes markerBlink {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+        .button-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            gap: 20px;
+        }
+        .info-button {
+            padding: 15px 30px;
+            font-size: 16px;
+            background-color: #1a237e;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .info-button:hover {
+            background-color: #283593;
+        }
+        .location-select {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: none;
+        }
+        .location-select select {
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #1a237e;
+            border-radius: 4px;
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div class="button-container">
+        <button class="info-button" onclick="window.location.href='fen-edebiyat-bilgi.html#hakkimizda'">Hakkında</button>
+        <button class="info-button" onclick="showRouteSelector()">Yol Tarifi</button>
+    </div>
+    <div id="locationSelect" class="location-select">
+        <select id="destinationSelect" onchange="showRoute()">
+            <option value="">Hedef konumu seçin</option>
+            <option value="ilahiyat">İlahiyat Fakültesi</option>
+            <option value="kutuphane">PROF. DR. S.KEMAL SANDIKÇI Kütüphanesi</option>
+            <option value="muhendislik">Mühendislik ve Mimarlık Fakültesi</option>
+            <option value="iktisadi">İktisadi ve İdari Bilimler Fakültesi</option>
+            <option value="spor">Spor Bilimleri Fakültesi</option>
+            <option value="su-urunleri">Su Ürünleri Fakültesi</option>
+            <option value="ogrenci-isleri">Öğrenci İşleri Daire Başkanlığı</option>
+            <option value="rektorluk">Rektörlük</option>
+            <option value="rektorluk-idari">Rektörlük İdari Birimler</option>
+            <option value="kongre">Kongre ve Kültür Merkezi</option>
+            <option value="muhendislik-dekanlik">Mühendislik ve Mimarlık Fakültesi Dekanlık</option>
+            <option value="ana-giris">Ana Giriş (Fener)</option>
+        </select>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Tüm konumlar
+        const locations = {
+            'fen-edebiyat': {
+                name: 'Fen Edebiyat Fakültesi',
+                coords: [41.0376968099801, 40.49424917916571]
+            },
+            'ilahiyat': {
+                name: 'İlahiyat Fakültesi',
+                coords: [41.03715488468153, 40.49665709262934]
+            },
+            'kutuphane': {
+                name: 'PROF. DR. S.KEMAL SANDIKÇI Kütüphanesi',
+                coords: [41.03754370944717, 40.49368029861141]
+            },
+            'muhendislik': {
+                name: 'Mühendislik ve Mimarlık Fakültesi',
+                coords: [41.0377312403235, 40.49383757344526]
+            },
+            'iktisadi': {
+                name: 'İktisadi ve İdari Bilimler Fakültesi',
+                coords: [41.03770402261626, 40.49485847382052]
+            },
+            'spor': {
+                name: 'Spor Bilimleri Fakültesi',
+                coords: [41.036934643594535, 40.49323052407454]
+            },
+            'su-urunleri': {
+                name: 'Su Ürünleri Fakültesi',
+                coords: [41.037833, 40.492777]
+            },
+            'ogrenci-isleri': {
+                name: 'Öğrenci İşleri Daire Başkanlığı',
+                coords: [41.037528, 40.492778]
+            },
+            'rektorluk': {
+                name: 'Rektörlük',
+                coords: [41.03830619044475, 40.493978215011154]
+            },
+            'rektorluk-idari': {
+                name: 'Rektörlük İdari Birimler',
+                coords: [41.03786891475911, 40.493095444934234]
+            },
+            'kongre': {
+                name: 'Kongre ve Kültür Merkezi',
+                coords: [41.03756327844423, 40.49310274042043]
+            },
+            'muhendislik-dekanlik': {
+                name: 'Mühendislik ve Mimarlık Fakültesi Dekanlık',
+                coords: [41.036990679211314, 40.49303551389488]
+            },
+            'ana-giris': {
+                name: 'Ana Giriş (Fener)',
+                coords: [41.038318, 40.493006]
+            }
+        };
+
+        // Harita oluştur
+        var map = L.map('map').setView([41.0376968099801, 40.49424917916571], 16);
+
+        // OpenStreetMap katmanı ekle
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // İşaretçi ikonları
+        const redIcon = L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34]
+        });
+
+        const blueIcon = L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34]
+        });
+
+        // Tüm konumları haritaya ekle
+        const markers = {};
+        for (const [key, location] of Object.entries(locations)) {
+            // Mevcut konum için kırmızı, diğerleri için mavi ikon kullan
+            const icon = key === 'fen-edebiyat' ? redIcon : blueIcon;
+            const marker = L.marker(location.coords, {icon: icon}).addTo(map);
+            
+            // Marker'a yanıp sönme efekti ekle (Sadece kırmızı marker için olacak)
+            // Bu kısım aşağıya, currentMarker oluşturulduktan sonra taşınacak.
+            // const markerElement = marker.getElement();
+            // if (markerElement) {
+            //     markerElement.classList.add('blinking-marker');
+            // } else {
+            //     setTimeout(function() {
+            //         const markerElement = marker.getElement();
+            //         if (markerElement) markerElement.classList.add('blinking-marker');
+            //     }, 500);
+            // }
+            
+            marker.bindPopup(`<b>${location.name}</b>`);
+            markers[key] = marker;
+        }
+
+        // Mevcut konumu vurgula
+        const currentMarker = markers['fen-edebiyat'];
+        currentMarker.bindPopup(`<b>Fen Edebiyat Fakültesi</b><br><span style='color:red;font-weight:bold;'>Buradasınız</span>`).openPopup();
+        
+        // Sadece kırmızı marker'a (Fen Edebiyat Fakültesi) yanıp sönme efekti ekle
+        const currentMarkerElement = currentMarker.getElement();
+        if (currentMarkerElement) {
+            currentMarkerElement.classList.add('blinking-marker');
+        } else {
+            // Element hemen bulunamazsa tekrar dene
+            setTimeout(function() {
+                const currentMarkerElement = currentMarker.getElement();
+                if (currentMarkerElement) currentMarkerElement.classList.add('blinking-marker');
+            }, 500);
+        }
+
+        // Rota çizgisi için değişken
+        let routeLine = null;
+
+        // Yol tarifi seçiciyi göster
+        function showRouteSelector() {
+            const selector = document.getElementById('locationSelect');
+            selector.style.display = selector.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Rota göster
+        function showRoute() {
+            const destination = document.getElementById('destinationSelect').value;
+            if (!destination) return;
+
+            // Önceki rotayı temizle
+            if (routeLine) {
+                map.removeLayer(routeLine);
+            }
+
+            // Yeni rota çiz
+            const start = locations['fen-edebiyat'].coords;
+            const end = locations[destination].coords;
+
+            routeLine = L.polyline([start, end], {
+                color: 'blue',
+                weight: 3,
+                opacity: 0.7,
+                dashArray: '10, 10'
+            }).addTo(map);
+
+            // Haritayı rotaya odakla
+            map.fitBounds(routeLine.getBounds(), {
+                padding: [50, 50]
+            });
+        }
+    </script>
+</body>
+</html> 
