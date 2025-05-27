@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Öğrenci İşleri Daire Başkanlığı - RTEÜ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1a237e;
+            --secondary-color: #283593;
+            --accent-color: #3949ab;
+            --text-color: #333;
+            --light-bg: #f5f5f5;
+            --white: #fff;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: var(--light-bg);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(26,35,126,0.08);
+            padding: 32px 24px;
+        }
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+        }
+        h2 {
+            color: var(--secondary-color);
+            font-size: 1.3rem;
+            margin-top: 32px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        p, ul {
+            font-size: 1.05rem;
+            margin-bottom: 12px;
+        }
+        ul {
+            padding-left: 22px;
+        }
+        .info-section {
+            margin-bottom: 28px;
+        }
+        .contact-box {
+            background: var(--light-bg);
+            border-left: 4px solid var(--primary-color);
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-top: 32px;
+            padding: 10px 28px;
+            background: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .back-btn:hover {
+            background: var(--accent-color);
+        }
+        @media (max-width: 600px) {
+            .container { padding: 12px 4px; }
+            h1 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fa-solid fa-user-graduate"></i> Öğrenci İşleri Daire Başkanlığı</h1>
+        <p style="color: #3949ab; font-size:1.1rem;">Recep Tayyip Erdoğan Üniversitesi</p>
+
+        <div class="info-section">
+            <h2><i class="fa-solid fa-landmark"></i> Genel Tanıtım</h2>
+            <p>Öğrenci İşleri Daire Başkanlığı, üniversitenin öğrenci odaklı tüm idari işlemlerini yürüten, kayıt, mezuniyet, belge işlemleri, yatay ve dikey geçişler, çift anadal/yandal, öğrenci otomasyonu ve uluslararası öğrenci işlemleri gibi birçok konuda hizmet veren ana birimdir. Öğrencilerin eğitim hayatı boyunca ihtiyaç duyduğu tüm resmi işlemler ve bilgilendirme süreçleri bu birim tarafından yürütülür.</p>
+        </div>
+
+        <div class="info-section">
+            <h2><i class="fa-solid fa-list-check"></i> Temel Hizmetler</h2>
+            <ul>
+                <li>Kayıt kabul ve mezuniyet işlemleri</li>
+                <li>Öğrenci belgesi, transkript ve kimlik kartı düzenleme</li>
+                <li>Yatay ve dikey geçiş işlemleri</li>
+                <li>Çift anadal ve yandal başvuruları</li>
+                <li>Uluslararası öğrenci işlemleri</li>
+                <li>Öğrenci otomasyonu ve bilgi sistemi yönetimi</li>
+                <li>Harç, katkı payı ve öğrenim ücreti işlemleri</li>
+                <li>İlişik kesme ve mezuniyet sonrası işlemler</li>
+                <li>Akademik takvim ve duyuruların paylaşımı</li>
+            </ul>
+        </div>
+
+        <div class="info-section">
+            <h2><i class="fa-solid fa-briefcase"></i> Görevler ve Sorumluluklar</h2>
+            <ul>
+                <li>Üniversite öğrencilerinin tüm idari işlemlerini mevzuata uygun şekilde yürütmek</li>
+                <li>Öğrencilerin taleplerini hızlı ve doğru şekilde karşılamak</li>
+                <li>Akademik birimler ve diğer idari birimlerle koordinasyon sağlamak</li>
+                <li>Bilgi güvenliği ve gizliliğine özen göstermek</li>
+                <li>Kalite standartlarına uygun hizmet sunmak</li>
+            </ul>
+        </div>
+
+        <div class="info-section">
+            <h2><i class="fa-solid fa-clock"></i> Çalışma Saatleri</h2>
+            <ul>
+                <li>Hafta içi: 08:30 - 17:30</li>
+            </ul>
+        </div>
+
+        <div class="info-section contact-box">
+            <h2><i class="fa-solid fa-address-book"></i> İletişim</h2>
+            <p><strong>Adres:</strong> Zihni Derin Yerleşkesi, Rektörlük Binası, Rize/TÜRKİYE</p>
+            <p><strong>Telefon:</strong> 444 01 99</p>
+            <p><strong>E-posta:</strong> <a href="mailto:oidb@erdogan.edu.tr">oidb@erdogan.edu.tr</a></p>
+        </div>
+
+        <a href="ogrenci-isleri.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Haritaya Dön</a>
+    </div>
+</body>
+</html> 

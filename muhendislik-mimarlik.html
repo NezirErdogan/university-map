@@ -54,6 +54,7 @@
             background-color: #283593;
         }
         .location-select {
+            display: none;
             position: fixed;
             top: 20px;
             left: 50%;
@@ -63,7 +64,6 @@
             background-color: white;
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            display: none;
         }
         .location-select select {
             padding: 8px;
@@ -210,7 +210,11 @@
         // Yol tarifi seçiciyi göster
         function showRouteSelector() {
             const selector = document.getElementById('locationSelect');
-            selector.style.display = selector.style.display === 'none' ? 'block' : 'none';
+            if (selector.style.display === 'block') {
+                selector.style.display = 'none';
+            } else {
+                selector.style.display = 'block';
+            }
         }
 
         // Rota göster
@@ -223,11 +227,24 @@
                 map.removeLayer(routeLine);
             }
 
-            // Yeni rota çiz
-            const start = locations['muhendislik'].coords; // Başlangıç noktası muhendislik fakültesi
-            const end = locations[destination].coords;
+            let routeCoords;
+            // Eğer hedef rektörlükse, gerçekçi güzergâhı çiz
+            if (destination === 'rektorluk') {
+                routeCoords = [
+                    locations['muhendislik'].coords,
+                    [41.03767, 40.49400], // Ara nokta: binanın köşesi
+                    [41.03755, 40.49418], // Ara nokta: kuzeye çıkış
+                    [41.03760, 40.49445], // Ara nokta: kuzeyde yolun köşesi
+                    [41.03800, 40.49445], // Ara nokta: doğuya dönüş
+                    [41.03830, 40.49400], // Ara nokta: rektörlük önüne iniş
+                    locations['rektorluk'].coords
+                ];
+            } else {
+                // Diğer hedefler için düz çizgi
+                routeCoords = [locations['muhendislik'].coords, locations[destination].coords];
+            }
 
-            routeLine = L.polyline([start, end], {
+            routeLine = L.polyline(routeCoords, {
                 color: 'blue',
                 weight: 3,
                 opacity: 0.7,
